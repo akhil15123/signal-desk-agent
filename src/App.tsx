@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { requestBrief } from './lib/api'
 import type {
   AgentResult,
@@ -63,10 +63,20 @@ function App() {
   const [result, setResult] = useState<AgentResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [runMode, setRunMode] = useState<'live' | 'demo' | null>(null)
+  const reportPanelRef = useRef<HTMLElement | null>(null)
 
   const isLoading = runMode !== null
   const canRun =
     draft.topic.trim().length >= 2 && draft.objective.trim().length >= 12
+
+  useEffect(() => {
+    if ((runMode || result || error) && reportPanelRef.current) {
+      reportPanelRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    }
+  }, [runMode, result, error])
 
   async function handleRun(mode: 'live' | 'demo') {
     if (!canRun) {
@@ -216,7 +226,7 @@ function App() {
           </p>
         </section>
 
-        <section className="panel panel-preview">
+        <section ref={reportPanelRef} className="panel panel-preview">
           <div className="panel-heading">
             <p className="eyebrow">What You Get</p>
             <h2>Operator-ready output</h2>

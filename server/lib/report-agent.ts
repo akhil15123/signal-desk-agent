@@ -25,6 +25,21 @@ type FunctionCall = {
   call_id: string
 }
 
+type UsageSnapshot = {
+  input_tokens?: number
+  output_tokens?: number
+  total_tokens?: number
+}
+
+type OutputItem = {
+  type?: string
+}
+
+type ResponseSnapshot = {
+  output?: OutputItem[]
+  usage?: UsageSnapshot
+}
+
 type UsageSummary = {
   inputTokens: number
   outputTokens: number
@@ -239,7 +254,7 @@ function addTrace(state: AgentState, tool: string, detail: string) {
   })
 }
 
-function mergeUsage(state: AgentState, response: any) {
+function mergeUsage(state: AgentState, response: ResponseSnapshot) {
   const usage = response.usage
 
   if (!usage) {
@@ -251,7 +266,7 @@ function mergeUsage(state: AgentState, response: any) {
   state.usage.totalTokens += usage.total_tokens ?? 0
 }
 
-function indexBuiltInCalls(state: AgentState, response: any) {
+function indexBuiltInCalls(state: AgentState, response: ResponseSnapshot) {
   for (const item of response.output ?? []) {
     if (item?.type === 'web_search_call') {
       state.searchRuns += 1
@@ -416,9 +431,13 @@ async function handleToolCall(
   }
 }
 
-function getFunctionCalls(response: any): FunctionCall[] {
+function isFunctionCall(item: OutputItem): item is FunctionCall {
+  return item.type === 'function_call'
+}
+
+function getFunctionCalls(response: ResponseSnapshot): FunctionCall[] {
   return (response.output ?? []).filter(
-    (item: any): item is FunctionCall => item?.type === 'function_call',
+    (item): item is FunctionCall => isFunctionCall(item),
   )
 }
 

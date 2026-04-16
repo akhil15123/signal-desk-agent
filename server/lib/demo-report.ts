@@ -1,10 +1,10 @@
-import type { BriefRequest } from './schemas.js'
+import { reportSchema, type BriefRequest } from './schemas.js'
 
 export function buildDemoBriefing(request: BriefRequest) {
   const now = new Date().toISOString()
 
   return {
-    report: {
+    report: reportSchema.parse({
       headline: `${request.topic}: demo intelligence brief`,
       positioning: `Illustrative ${request.mode} output shaped for a ${request.audience} audience. This path is intentionally static so the interface can be explored before a live OpenAI key is added.`,
       summary: [
@@ -60,13 +60,13 @@ export function buildDemoBriefing(request: BriefRequest) {
       ],
       timeline: [
         {
-          date: 'T-0',
+          date: 'T-00',
           event: 'User frames a research mission in the intake panel',
           relevance:
             'The agent gets a sharper objective and can optimize the brief around a concrete question.',
         },
         {
-          date: 'T+1',
+          date: 'T+01',
           event: 'Agent route assembles structured findings and actions',
           relevance:
             'The response is ready for UI rendering without extra markdown parsing.',
@@ -112,7 +112,7 @@ export function buildDemoBriefing(request: BriefRequest) {
           note: 'Illustrative placeholder used to preview citation rendering.',
         },
       ],
-    },
+    }),
     trace: [
       {
         tool: 'save_finding',

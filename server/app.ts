@@ -1,5 +1,7 @@
 import cors from 'cors'
 import express from 'express'
+import { runBriefingAgent } from './lib/report-agent.js'
+import { briefRequestSchema } from './lib/schemas.js'
 
 export function createApp() {
   const app = express()
@@ -13,6 +15,30 @@ export function createApp() {
       service: 'signal-desk-agent',
       timestamp: new Date().toISOString(),
     })
+  })
+
+  app.post('/api/brief', async (req, res) => {
+    const parsed = briefRequestSchema.safeParse(req.body)
+
+    if (!parsed.success) {
+      res.status(400).json({
+        error: 'Invalid briefing request.',
+        issues: parsed.error.issues,
+      })
+      return
+    }
+
+    try {
+      const result = await runBriefingAgent(parsed.data)
+      res.json(result)
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Unexpected agent failure.'
+
+      res.status(500).json({
+        error: message,
+      })
+    }
   })
 
   return app

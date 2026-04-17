@@ -1,23 +1,27 @@
 import { z } from 'zod'
+import {
+  briefAudiences,
+  briefModes,
+  briefRequestLimits,
+} from '../../shared/briefing.ts'
 
-export const briefModeSchema = z.enum([
-  'risk-radar',
-  'market-map',
-  'opportunity-brief',
-])
+export const briefModeSchema = z.enum(briefModes)
 
-export const briefAudienceSchema = z.enum([
-  'executive',
-  'investor',
-  'product',
-  'operations',
-])
+export const briefAudienceSchema = z.enum(briefAudiences)
 
 export const confidenceSchema = z.enum(['high', 'medium', 'low'])
 
 export const briefRequestSchema = z.object({
-  topic: z.string().trim().min(2).max(120),
-  objective: z.string().trim().min(12).max(600),
+  topic: z
+    .string()
+    .trim()
+    .min(briefRequestLimits.topic.min)
+    .max(briefRequestLimits.topic.max),
+  objective: z
+    .string()
+    .trim()
+    .min(briefRequestLimits.objective.min)
+    .max(briefRequestLimits.objective.max),
   mode: briefModeSchema,
   audience: briefAudienceSchema,
 })

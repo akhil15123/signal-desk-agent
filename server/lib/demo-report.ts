@@ -1,17 +1,8 @@
+import {
+  briefAudienceMeta,
+  briefModeMeta,
+} from '../../shared/briefing.ts'
 import { reportSchema, type BriefRequest } from './schemas.js'
-
-const modeLabel: Record<BriefRequest['mode'], string> = {
-  'risk-radar': 'risk radar',
-  'market-map': 'market map',
-  'opportunity-brief': 'opportunity brief',
-}
-
-const audienceLabel: Record<BriefRequest['audience'], string> = {
-  executive: 'an executive audience',
-  investor: 'an investor audience',
-  product: 'a product audience',
-  operations: 'an operations audience',
-}
 
 export function buildDemoBriefing(request: BriefRequest) {
   const now = new Date().toISOString()
@@ -19,7 +10,7 @@ export function buildDemoBriefing(request: BriefRequest) {
   return {
     report: reportSchema.parse({
       headline: `${request.topic}: demo intelligence brief`,
-      positioning: `Illustrative ${modeLabel[request.mode]} output shaped for ${audienceLabel[request.audience]}. This path is intentionally static so the interface can be explored before a live OpenAI key is added.`,
+      positioning: `Illustrative ${briefModeMeta[request.mode].promptLabel} output shaped for ${briefAudienceMeta[request.audience].demoLabel}. This path is intentionally static so the interface can be explored before a live OpenAI key is added.`,
       summary: [
         `${request.topic} is presented as a fast-moving operating environment with mixed execution and narrative signals.`,
         `The demo emphasizes how Signal Desk compresses a broad objective into a compact decision brief instead of a long transcript.`,

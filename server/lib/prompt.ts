@@ -1,17 +1,8 @@
+import {
+  briefAudienceMeta,
+  briefModeMeta,
+} from '../../shared/briefing.ts'
 import type { BriefRequest } from './schemas.js'
-
-const modeLabels: Record<BriefRequest['mode'], string> = {
-  'risk-radar': 'risk radar',
-  'market-map': 'market map',
-  'opportunity-brief': 'opportunity brief',
-}
-
-const audienceLabels: Record<BriefRequest['audience'], string> = {
-  executive: 'an executive leadership team',
-  investor: 'an investor or diligence audience',
-  product: 'a product strategy team',
-  operations: 'an operations leadership team',
-}
 
 export const AGENT_INSTRUCTIONS = `You are Signal Desk, a senior analyst that produces compact, decision-ready intelligence briefs.
 
@@ -33,8 +24,8 @@ Quality bar:
 - The final brief should be useful to a busy operator in under two minutes.`
 
 export function buildBriefUserInput(request: BriefRequest) {
-  return `Build a ${modeLabels[request.mode]} on "${request.topic}" for ${
-    audienceLabels[request.audience]
+  return `Build a ${briefModeMeta[request.mode].promptLabel} on "${request.topic}" for ${
+    briefAudienceMeta[request.audience].promptLabel
   }.
 
 Primary objective:

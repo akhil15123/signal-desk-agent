@@ -1,4 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import {
+  briefAudienceMeta,
+  briefAudiences,
+  briefModeMeta,
+  briefModes,
+} from '../shared/briefing.ts'
 import { requestBrief } from './lib/api'
 import type {
   AgentResult,
@@ -7,38 +13,13 @@ import type {
   BriefRequest,
 } from './lib/types'
 
-const modeCards: Array<{
-  id: BriefMode
-  title: string
-  eyebrow: string
-  detail: string
-}> = [
-  {
-    id: 'risk-radar',
-    title: 'Risk Radar',
-    eyebrow: 'Pressure Test',
-    detail: 'Map immediate downside, fragility, and fast-moving narrative shifts.',
-  },
-  {
-    id: 'market-map',
-    title: 'Market Map',
-    eyebrow: 'Position Scan',
-    detail: 'Compare positioning, competitors, and category momentum signals.',
-  },
-  {
-    id: 'opportunity-brief',
-    title: 'Opportunity Brief',
-    eyebrow: 'Next Move',
-    detail: 'Surface asymmetries, openings, and concrete operator recommendations.',
-  },
-]
+const modeCards: Array<{ id: BriefMode } & (typeof briefModeMeta)[BriefMode]> =
+  briefModes.map((mode) => ({
+    id: mode,
+    ...briefModeMeta[mode],
+  }))
 
-const audiences: BriefAudience[] = [
-  'executive',
-  'investor',
-  'product',
-  'operations',
-]
+const audiences: BriefAudience[] = [...briefAudiences]
 
 const sampleSignals = [
   'Fresh web research with a structured source pack',
@@ -195,7 +176,7 @@ function App() {
                     setDraft((current) => ({ ...current, audience }))
                   }
                 >
-                  {audience}
+                  {briefAudienceMeta[audience].title}
                 </button>
               ))}
             </div>

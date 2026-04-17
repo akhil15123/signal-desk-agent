@@ -1,5 +1,9 @@
-export type BriefMode = 'risk-radar' | 'market-map' | 'opportunity-brief'
-export type BriefAudience = 'executive' | 'investor' | 'product' | 'operations'
+import type {
+  BriefAudience,
+  BriefMode,
+} from '../../shared/briefing.ts'
+
+export type { BriefAudience, BriefMode }
 
 export type BriefRequest = {
   topic: string

@@ -12,6 +12,8 @@ describe('createApp', () => {
     })
 
     expect(response.status).toBe(200)
+    expect(response.headers['x-request-id']).toBeTruthy()
+    expect(response.body.requestId).toBe(response.headers['x-request-id'])
     expect(response.body.report.headline).toContain('Perplexity')
     expect(response.body.report.findings).toHaveLength(4)
   })
@@ -40,6 +42,7 @@ describe('createApp', () => {
 
     expect(response.status).toBe(400)
     expect(response.body.error).toBe('Invalid demo briefing request.')
+    expect(response.body.requestId).toBe(response.headers['x-request-id'])
   })
 
   it('returns 400 for malformed JSON payloads', async () => {
@@ -50,5 +53,14 @@ describe('createApp', () => {
 
     expect(response.status).toBe(400)
     expect(response.body.error).toBe('Invalid JSON payload.')
+    expect(response.body.requestId).toBe(response.headers['x-request-id'])
+  })
+
+  it('returns a request id from the health endpoint', async () => {
+    const response = await request(createApp()).get('/api/health')
+
+    expect(response.status).toBe(200)
+    expect(response.body.ok).toBe(true)
+    expect(response.body.requestId).toBe(response.headers['x-request-id'])
   })
 })

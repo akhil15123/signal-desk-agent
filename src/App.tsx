@@ -89,6 +89,18 @@ function formatSourceDomain(url: string) {
   }
 }
 
+function formatTraceTimestamp(value: string) {
+  try {
+    return new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+    }).format(new Date(value))
+  } catch {
+    return value
+  }
+}
+
 function App() {
   const [draft, setDraft] = useState<BriefRequest>(() =>
     loadStoredDraft(initialDraft),
@@ -533,7 +545,10 @@ function App() {
                   <div className="trace-list">
                     {result.trace.map((entry) => (
                       <div key={`${entry.tool}-${entry.timestamp}`} className="trace-item">
-                        <strong>{entry.tool}</strong>
+                        <div className="trace-head">
+                          <strong>{entry.tool}</strong>
+                          <span>{formatTraceTimestamp(entry.timestamp)}</span>
+                        </div>
                         <p>{entry.detail}</p>
                       </div>
                     ))}

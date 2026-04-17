@@ -590,6 +590,19 @@ button {
   margin-bottom: 6px;
 }
 
+.trace-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.trace-head span {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
 .timeline-item span,
 .recommendation-item span {
   color: var(--muted);

@@ -121,6 +121,7 @@ function App() {
     requestId?: string
   } | null>(null)
   const [runMode, setRunMode] = useState<'live' | 'demo' | null>(null)
+  const [summaryCopied, setSummaryCopied] = useState(false)
   const reportPanelRef = useRef<HTMLElement | null>(null)
 
   const isLoading = runMode !== null
@@ -162,6 +163,10 @@ function App() {
   useEffect(() => {
     saveDraft(draft)
   }, [draft])
+
+  useEffect(() => {
+    setSummaryCopied(false)
+  }, [result])
 
   async function handleRun(mode: 'live' | 'demo') {
     if (!canRun) {
@@ -443,6 +448,23 @@ function App() {
                 <h3>{result.report.headline}</h3>
                 <p>{result.report.positioning}</p>
                 <div className="report-actions">
+                  <button
+                    type="button"
+                    className="utility-button"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(
+                        result.report.summary
+                          .map((item) => `- ${item}`)
+                          .join('\n'),
+                      )
+                      setSummaryCopied(true)
+                      window.setTimeout(() => {
+                        setSummaryCopied(false)
+                      }, 1500)
+                    }}
+                  >
+                    {summaryCopied ? 'Summary copied' : 'Copy summary'}
+                  </button>
                   <button
                     type="button"
                     className="utility-button"

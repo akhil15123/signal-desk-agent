@@ -366,4 +366,28 @@ describe('runBriefingAgent', () => {
       '2026-03-10',
     ])
   })
+
+  it('throws a clear error when the agent never submits a structured report', async () => {
+    responsesCreate.mockResolvedValueOnce({
+      id: 'resp_empty_1',
+      output: [],
+      usage: {
+        input_tokens: 25,
+        output_tokens: 15,
+        total_tokens: 40,
+      },
+    })
+
+    await expect(
+      runBriefingAgent({
+        topic: 'Anthropic',
+        objective:
+          'Assess competitive pressure, enterprise momentum, and the most important near-term risks.',
+        mode: 'risk-radar',
+        audience: 'executive',
+      }),
+    ).rejects.toThrow(
+      'The agent did not finish a structured brief. Try broadening the topic or objective and rerun.',
+    )
+  })
 })

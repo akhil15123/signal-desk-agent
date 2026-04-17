@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import { ZodError } from 'zod'
+import { agentConfig } from './config.js'
 import { AGENT_INSTRUCTIONS, buildBriefUserInput } from './prompt.js'
 import {
   type BriefFinding,
@@ -60,9 +61,6 @@ type AgentState = {
   searchRuns: number
   usage: UsageSummary
 }
-
-const MAX_AGENT_ROUNDS = 8
-const MODEL_NAME = process.env.OPENAI_MODEL ?? 'gpt-5-mini'
 
 const findingTool = {
   type: 'function' as const,
@@ -518,18 +516,18 @@ export async function runBriefingAgent(request: BriefRequest) {
   const state = createEmptyState()
 
   let response = await client.responses.create({
-    model: MODEL_NAME,
+    model: agentConfig.model,
     instructions: AGENT_INSTRUCTIONS,
     input: buildBriefUserInput(request),
     tools: agentTools,
     tool_choice: 'auto',
-    reasoning: { effort: 'medium' },
+    reasoning: { effort: agentConfig.reasoningEffort },
   })
 
   mergeUsage(state, response)
   indexBuiltInCalls(state, response)
 
-  for (let round = 0; round < MAX_AGENT_ROUNDS; round += 1) {
+  for (let round = 0; round < agentConfig.maxRounds; round += 1) {
     const functionCalls = getFunctionCalls(response)
 
     if (functionCalls.length === 0) {
@@ -552,12 +550,12 @@ export async function runBriefingAgent(request: BriefRequest) {
     }
 
     response = await client.responses.create({
-      model: MODEL_NAME,
+      model: agentConfig.model,
       previous_response_id: response.id,
       input: toolOutputs,
       tools: agentTools,
       tool_choice: 'auto',
-      reasoning: { effort: 'medium' },
+      reasoning: { effort: agentConfig.reasoningEffort },
     })
 
     mergeUsage(state, response)
@@ -574,7 +572,7 @@ export async function runBriefingAgent(request: BriefRequest) {
     report: state.finalReport,
     trace: state.trace,
     meta: {
-      model: MODEL_NAME,
+      model: agentConfig.model,
       searchRuns: state.searchRuns,
       usage: state.usage,
     },

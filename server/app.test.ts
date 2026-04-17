@@ -1,8 +1,18 @@
 import request from 'supertest'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { createApp } from './app.js'
 
 describe('createApp', () => {
+  const originalApiKey = process.env.OPENAI_API_KEY
+
+  beforeEach(() => {
+    process.env.OPENAI_API_KEY = originalApiKey
+  })
+
+  afterEach(() => {
+    process.env.OPENAI_API_KEY = originalApiKey
+  })
+
   it('returns a demo brief for valid input', async () => {
     const response = await request(createApp()).post('/api/demo').send({
       topic: 'Perplexity',
@@ -61,6 +71,22 @@ describe('createApp', () => {
 
     expect(response.status).toBe(200)
     expect(response.body.ok).toBe(true)
+    expect(response.body.requestId).toBe(response.headers['x-request-id'])
+  })
+
+  it('returns a clear error when the live route has no API key configured', async () => {
+    delete process.env.OPENAI_API_KEY
+
+    const response = await request(createApp()).post('/api/brief').send({
+      topic: 'Anthropic',
+      objective:
+        'Assess competitive pressure, enterprise momentum, and the most important near-term risks.',
+      mode: 'risk-radar',
+      audience: 'executive',
+    })
+
+    expect(response.status).toBe(500)
+    expect(response.body.error).toContain('OPENAI_API_KEY is missing')
     expect(response.body.requestId).toBe(response.headers['x-request-id'])
   })
 })

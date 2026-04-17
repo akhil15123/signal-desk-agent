@@ -1,5 +1,6 @@
 import cors from 'cors'
 import express from 'express'
+import { normalizeBriefRequestPayload } from './lib/brief-request.js'
 import { buildDemoBriefing } from './lib/demo-report.js'
 import { runBriefingAgent } from './lib/report-agent.js'
 import { briefRequestSchema } from './lib/schemas.js'
@@ -19,7 +20,9 @@ export function createApp() {
   })
 
   app.post('/api/brief', async (req, res) => {
-    const parsed = briefRequestSchema.safeParse(req.body)
+    const parsed = briefRequestSchema.safeParse(
+      normalizeBriefRequestPayload(req.body),
+    )
 
     if (!parsed.success) {
       res.status(400).json({
@@ -43,7 +46,9 @@ export function createApp() {
   })
 
   app.post('/api/demo', (req, res) => {
-    const parsed = briefRequestSchema.safeParse(req.body)
+    const parsed = briefRequestSchema.safeParse(
+      normalizeBriefRequestPayload(req.body),
+    )
 
     if (!parsed.success) {
       res.status(400).json({

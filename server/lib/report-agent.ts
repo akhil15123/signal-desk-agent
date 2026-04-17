@@ -370,6 +370,7 @@ async function handleToolCall(
   const parsedArgs = parseFunctionArguments(call)
 
   if (!parsedArgs.ok) {
+    addTrace(state, call.name, 'Rejected malformed JSON arguments.')
     return {
       ok: false,
       message: `${call.name} failed: ${parsedArgs.message}`,
@@ -385,16 +386,22 @@ async function handleToolCall(
           `${item.title.toLowerCase()}::${item.sourceUrl.toLowerCase()}` === key,
       )
 
-      if (!alreadySaved) {
-        state.findings.push(finding)
+      if (alreadySaved) {
+        addTrace(state, call.name, `Skipped duplicate finding: ${finding.title}`)
+        return {
+          ok: true,
+          message: 'Finding already saved.',
+        }
       }
 
+      state.findings.push(finding)
       addTrace(state, call.name, finding.title)
       return {
         ok: true,
         message: `Finding saved. Total findings: ${state.findings.length}.`,
       }
     } catch (error) {
+      addTrace(state, call.name, `Validation failed: ${toValidationMessage(error)}`)
       return {
         ok: false,
         message: `save_finding validation failed: ${toValidationMessage(error)}`,
@@ -411,16 +418,26 @@ async function handleToolCall(
           `${item.date.toLowerCase()}::${item.event.toLowerCase()}` === key,
       )
 
-      if (!alreadySaved) {
-        state.timeline.push(event)
+      if (alreadySaved) {
+        addTrace(
+          state,
+          call.name,
+          `Skipped duplicate timeline event: ${event.date} - ${event.event}`,
+        )
+        return {
+          ok: true,
+          message: 'Timeline event already saved.',
+        }
       }
 
+      state.timeline.push(event)
       addTrace(state, call.name, `${event.date} - ${event.event}`)
       return {
         ok: true,
         message: `Timeline event saved. Total events: ${state.timeline.length}.`,
       }
     } catch (error) {
+      addTrace(state, call.name, `Validation failed: ${toValidationMessage(error)}`)
       return {
         ok: false,
         message: `save_timeline_event validation failed: ${toValidationMessage(error)}`,
@@ -439,6 +456,7 @@ async function handleToolCall(
         message: 'Report accepted.',
       }
     } catch (error) {
+      addTrace(state, call.name, `Validation failed: ${toValidationMessage(error)}`)
       return {
         ok: false,
         message: `submit_brief_report validation failed: ${toValidationMessage(error)}`,
@@ -446,6 +464,7 @@ async function handleToolCall(
     }
   }
 
+  addTrace(state, call.name, 'Rejected unknown tool call.')
   return {
     ok: false,
     message: `Unknown tool: ${call.name}`,

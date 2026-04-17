@@ -476,6 +476,23 @@ button {
   gap: 12px;
 }
 
+.report-jump-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.report-jump-nav a {
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.54);
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
 .meta-row {
   display: flex;
   flex-wrap: wrap;

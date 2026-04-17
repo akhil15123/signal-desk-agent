@@ -77,6 +77,15 @@ const starterPresets: Array<{
   },
 ]
 
+const reportSections = [
+  { id: 'brief-findings', label: 'Findings' },
+  { id: 'brief-timeline', label: 'Timeline' },
+  { id: 'brief-actions', label: 'Actions' },
+  { id: 'brief-watchlist', label: 'Watchlist' },
+  { id: 'brief-trace', label: 'Trace' },
+  { id: 'brief-sources', label: 'Sources' },
+] as const
+
 function formatTokens(value: number) {
   return new Intl.NumberFormat('en-US').format(value)
 }
@@ -453,6 +462,14 @@ function App() {
                 </article>
               </section>
 
+              <nav className="report-jump-nav" aria-label="Brief sections">
+                {reportSections.map((section) => (
+                  <a key={section.id} href={`#${section.id}`}>
+                    {section.label}
+                  </a>
+                ))}
+              </nav>
+
               <section className="summary-grid">
                 {result.report.summary.map((item) => (
                   <article key={item} className="stack-card summary-card">
@@ -461,7 +478,7 @@ function App() {
                 ))}
               </section>
 
-              <section className="report-section">
+              <section id="brief-findings" className="report-section">
                 <div className="section-head">
                   <div className="report-tag">Findings</div>
                   <h3>Key signals</h3>
@@ -491,7 +508,7 @@ function App() {
 
               <section className="report-section two-up">
                 <article className="stack-card">
-                  <div className="section-head">
+                  <div id="brief-timeline" className="section-head">
                     <div className="report-tag">Timeline</div>
                     <h3>Recent shifts</h3>
                   </div>
@@ -507,7 +524,7 @@ function App() {
                 </article>
 
                 <article className="stack-card">
-                  <div className="section-head">
+                  <div id="brief-actions" className="section-head">
                     <div className="report-tag">Actions</div>
                     <h3>Recommended moves</h3>
                   </div>
@@ -526,7 +543,7 @@ function App() {
 
               <section className="report-section two-up">
                 <article className="stack-card">
-                  <div className="section-head">
+                  <div id="brief-watchlist" className="section-head">
                     <div className="report-tag">Watchlist</div>
                     <h3>Keep an eye on</h3>
                   </div>
@@ -538,7 +555,7 @@ function App() {
                 </article>
 
                 <article className="stack-card">
-                  <div className="section-head">
+                  <div id="brief-trace" className="section-head">
                     <div className="report-tag">Trace</div>
                     <h3>Agent actions</h3>
                   </div>
@@ -556,7 +573,7 @@ function App() {
                 </article>
               </section>
 
-              <section className="report-section">
+              <section id="brief-sources" className="report-section">
                 <div className="section-head">
                   <div className="report-tag">Sources</div>
                   <h3>Source pack</h3>

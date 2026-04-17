@@ -1,4 +1,4 @@
-import type { AgentResult, BriefRequest } from './types'
+import type { AgentErrorPayload, AgentResult, BriefRequest } from './types'
 
 type RunMode = 'live' | 'demo'
 
@@ -15,10 +15,21 @@ export async function requestBrief(
     body: JSON.stringify(draft),
   })
 
-  const payload = await response.json().catch(() => null)
+  const payload = (await response.json().catch(() => null)) as
+    | AgentResult
+    | AgentErrorPayload
+    | null
 
   if (!response.ok) {
-    throw new Error(payload?.error ?? 'The briefing request failed.')
+    const requestId = payload?.requestId
+    const message =
+      payload && 'error' in payload
+        ? payload.error
+        : 'The briefing request failed.'
+
+    throw new Error(
+      requestId ? `${message} Request ID: ${requestId}` : message,
+    )
   }
 
   return payload as AgentResult

@@ -69,4 +69,10 @@ export type AgentResult = {
       totalTokens: number
     }
   }
+  requestId: string
+}
+
+export type AgentErrorPayload = {
+  error: string
+  requestId?: string
 }

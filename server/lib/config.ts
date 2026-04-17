@@ -26,6 +26,7 @@ function readReasoningEffort(name: string, fallback: ReasoningEffort) {
 }
 
 export const agentConfig = Object.freeze({
+  baseUrl: process.env.OPENAI_BASE_URL || undefined,
   model: process.env.OPENAI_MODEL ?? 'gpt-5-mini',
   maxRounds: readPositiveInteger('SIGNAL_DESK_MAX_AGENT_ROUNDS', 8),
   reasoningEffort: readReasoningEffort(

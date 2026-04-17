@@ -226,7 +226,10 @@ function createClient() {
     )
   }
 
-  return new OpenAI({ apiKey })
+  return new OpenAI({
+    apiKey,
+    baseURL: agentConfig.baseUrl,
+  })
 }
 
 function createEmptyState(): AgentState {

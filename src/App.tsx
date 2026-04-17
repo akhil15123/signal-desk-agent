@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import {
   briefAudienceMeta,
   briefAudiences,
+  briefRequestLimits,
   briefModeMeta,
   briefModes,
 } from '../shared/briefing.ts'
@@ -50,8 +51,25 @@ function App() {
   const reportPanelRef = useRef<HTMLElement | null>(null)
 
   const isLoading = runMode !== null
+  const topicLength = draft.topic.trim().length
+  const objectiveLength = draft.objective.trim().length
   const canRun =
-    draft.topic.trim().length >= 2 && draft.objective.trim().length >= 12
+    topicLength >= briefRequestLimits.topic.min &&
+    objectiveLength >= briefRequestLimits.objective.min
+
+  const topicMessage =
+    topicLength < briefRequestLimits.topic.min
+      ? `Use at least ${briefRequestLimits.topic.min} characters so the agent has a concrete target.`
+      : topicLength > briefRequestLimits.topic.max
+        ? `Keep the topic under ${briefRequestLimits.topic.max} characters to avoid a noisy mission.`
+        : 'Name the company, market, product, or issue you want the brief to center on.'
+
+  const objectiveMessage =
+    objectiveLength < briefRequestLimits.objective.min
+      ? `Use at least ${briefRequestLimits.objective.min} characters so the objective is specific enough to optimize for.`
+      : objectiveLength > briefRequestLimits.objective.max
+        ? `Keep the objective under ${briefRequestLimits.objective.max} characters so the run stays focused.`
+        : 'Spell out the decision, risk, or opportunity the agent should optimize around.'
 
   useEffect(() => {
     if ((runMode || result || error) && reportPanelRef.current) {
@@ -158,6 +176,16 @@ function App() {
               }
               placeholder="Company, market, product, or strategic issue"
             />
+            <p
+              className={`field-message ${
+                topicLength < briefRequestLimits.topic.min ||
+                topicLength > briefRequestLimits.topic.max
+                  ? 'is-error'
+                  : ''
+              }`}
+            >
+              {topicMessage}
+            </p>
           </label>
 
           <label className="field">
@@ -173,6 +201,16 @@ function App() {
               }
               placeholder="What should the agent optimize for?"
             />
+            <p
+              className={`field-message ${
+                objectiveLength < briefRequestLimits.objective.min ||
+                objectiveLength > briefRequestLimits.objective.max
+                  ? 'is-error'
+                  : ''
+              }`}
+            >
+              {objectiveMessage}
+            </p>
           </label>
 
           <div className="field">

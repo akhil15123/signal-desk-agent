@@ -349,15 +349,36 @@ function toValidationMessage(error: unknown): string {
   return 'Unknown validation error.'
 }
 
+function parseFunctionArguments(call: FunctionCall) {
+  try {
+    return {
+      ok: true as const,
+      value: JSON.parse(call.arguments),
+    }
+  } catch (error) {
+    return {
+      ok: false as const,
+      message: `Invalid JSON arguments: ${toValidationMessage(error)}`,
+    }
+  }
+}
+
 async function handleToolCall(
   state: AgentState,
   call: FunctionCall,
 ): Promise<ToolOutput> {
-  const parsedArgs = JSON.parse(call.arguments)
+  const parsedArgs = parseFunctionArguments(call)
+
+  if (!parsedArgs.ok) {
+    return {
+      ok: false,
+      message: `${call.name} failed: ${parsedArgs.message}`,
+    }
+  }
 
   if (call.name === 'save_finding') {
     try {
-      const finding = findingSchema.parse(parsedArgs)
+      const finding = findingSchema.parse(parsedArgs.value)
       const key = `${finding.title.toLowerCase()}::${finding.sourceUrl.toLowerCase()}`
       const alreadySaved = state.findings.some(
         (item) =>
@@ -383,7 +404,7 @@ async function handleToolCall(
 
   if (call.name === 'save_timeline_event') {
     try {
-      const event = timelineEventSchema.parse(parsedArgs)
+      const event = timelineEventSchema.parse(parsedArgs.value)
       const key = `${event.date.toLowerCase()}::${event.event.toLowerCase()}`
       const alreadySaved = state.timeline.some(
         (item) =>
@@ -409,7 +430,7 @@ async function handleToolCall(
 
   if (call.name === 'submit_brief_report') {
     try {
-      const report = reportSchema.parse(parsedArgs)
+      const report = reportSchema.parse(parsedArgs.value)
       state.finalReport = normalizeReport(report, state)
       addTrace(state, call.name, state.finalReport.headline)
 

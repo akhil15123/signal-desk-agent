@@ -5,7 +5,7 @@ import {
   briefModeMeta,
   briefModes,
 } from '../shared/briefing.ts'
-import { requestBrief } from './lib/api'
+import { BriefRequestError, requestBrief } from './lib/api'
 import type {
   AgentResult,
   BriefAudience,
@@ -42,7 +42,10 @@ function formatTokens(value: number) {
 function App() {
   const [draft, setDraft] = useState<BriefRequest>(initialDraft)
   const [result, setResult] = useState<AgentResult | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<{
+    message: string
+    requestId?: string
+  } | null>(null)
   const [runMode, setRunMode] = useState<'live' | 'demo' | null>(null)
   const reportPanelRef = useRef<HTMLElement | null>(null)
 
@@ -72,9 +75,17 @@ function App() {
       setResult(payload)
     } catch (runError) {
       setError(
-        runError instanceof Error
-          ? runError.message
-          : 'The agent could not build a brief.',
+        runError instanceof BriefRequestError
+          ? {
+              message: runError.message,
+              requestId: runError.requestId,
+            }
+          : {
+              message:
+                runError instanceof Error
+                  ? runError.message
+                  : 'The agent could not build a brief.',
+            },
       )
     } finally {
       setRunMode(null)
@@ -232,11 +243,14 @@ function App() {
           {error ? (
             <article className="stack-card error-card">
               <div className="report-tag">Run failed</div>
-              <h3>{error}</h3>
+              <h3>{error.message}</h3>
               <p>
                 Live mode needs a valid backend configuration. Demo mode is still
                 available for UI previewing.
               </p>
+              {error.requestId ? (
+                <p className="request-copy">Request ID: {error.requestId}</p>
+              ) : null}
             </article>
           ) : null}
 
@@ -267,6 +281,7 @@ function App() {
                   <span className="pill">
                     {formatTokens(result.meta.usage.totalTokens)} tokens
                   </span>
+                  <span className="pill">request {result.requestId}</span>
                 </div>
                 <div className="report-tag">Brief ready</div>
                 <h3>{result.report.headline}</h3>

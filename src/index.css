@@ -345,6 +345,13 @@ button {
   font-size: 0.94rem;
 }
 
+.request-copy {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
 .stack-card {
   border-radius: var(--radius-lg);
   padding: 18px;

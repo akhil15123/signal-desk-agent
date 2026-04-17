@@ -2,6 +2,16 @@ import type { AgentErrorPayload, AgentResult, BriefRequest } from './types'
 
 type RunMode = 'live' | 'demo'
 
+export class BriefRequestError extends Error {
+  requestId?: string
+
+  constructor(message: string, requestId?: string) {
+    super(message)
+    this.name = 'BriefRequestError'
+    this.requestId = requestId
+  }
+}
+
 export async function requestBrief(
   draft: BriefRequest,
   mode: RunMode,
@@ -27,9 +37,7 @@ export async function requestBrief(
         ? payload.error
         : 'The briefing request failed.'
 
-    throw new Error(
-      requestId ? `${message} Request ID: ${requestId}` : message,
-    )
+    throw new BriefRequestError(message, requestId)
   }
 
   return payload as AgentResult

@@ -36,6 +36,46 @@ const initialDraft: BriefRequest = {
   audience: 'executive',
 }
 
+const starterPresets: Array<{
+  label: string
+  description: string
+  draft: BriefRequest
+}> = [
+  {
+    label: 'Model race',
+    description: 'Competitive pressure and execution risk',
+    draft: {
+      topic: 'Anthropic',
+      objective:
+        'Assess competitive pressure, enterprise momentum, and the most important near-term risks.',
+      mode: 'risk-radar',
+      audience: 'executive',
+    },
+  },
+  {
+    label: 'Search stack',
+    description: 'Positioning, narrative, and buyer pull',
+    draft: {
+      topic: 'Perplexity',
+      objective:
+        'Map category positioning, buyer momentum, and the most important execution questions for the next two quarters.',
+      mode: 'market-map',
+      audience: 'investor',
+    },
+  },
+  {
+    label: 'Platform opening',
+    description: 'New opportunity framing for product leaders',
+    draft: {
+      topic: 'OpenAI enterprise tools',
+      objective:
+        'Identify product openings, adoption asymmetries, and concrete actions a product strategy team should test next.',
+      mode: 'opportunity-brief',
+      audience: 'product',
+    },
+  },
+]
+
 function formatTokens(value: number) {
   return new Intl.NumberFormat('en-US').format(value)
 }
@@ -169,6 +209,20 @@ function App() {
                 <span className="mode-eyebrow">{mode.eyebrow}</span>
                 <strong>{mode.title}</strong>
                 <span>{mode.detail}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="preset-row">
+            {starterPresets.map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                className="preset-card"
+                onClick={() => setDraft(preset.draft)}
+              >
+                <strong>{preset.label}</strong>
+                <span>{preset.description}</span>
               </button>
             ))}
           </div>

@@ -258,4 +258,112 @@ describe('runBriefingAgent', () => {
       ),
     ).toBe(true)
   })
+
+  it('dedupes saved findings and sorts merged timelines in the final report', async () => {
+    const report = buildValidReport(
+      'Anthropic merges saved evidence into the final brief cleanly',
+    )
+    report.timeline = [
+      {
+        date: '2026-03-10',
+        event: 'An earlier event landed before the major update',
+        relevance:
+          'This provides an older anchor point that should sort behind newer dated events.',
+      },
+      {
+        date: '2026-04-22',
+        event: 'A newer event arrived after the earlier milestone',
+        relevance:
+          'The merged timeline should place this event ahead of older dated entries.',
+      },
+    ]
+    responsesCreate
+      .mockResolvedValueOnce({
+        id: 'resp_merge_1',
+        output: [
+          {
+            type: 'function_call',
+            name: 'save_finding',
+            arguments: JSON.stringify({
+              title: 'Enterprise demand keeps climbing',
+              category: 'Demand',
+              signal:
+                'The market is showing stronger enterprise pull as buyers consolidate around fewer vendors.',
+              whyItMatters:
+                'Signal Desk needs to surface clear demand shifts instead of vague market chatter.',
+              confidence: 'high',
+              sourceTitle: 'Market note',
+              sourceUrl: 'https://example.com/market-note',
+            }),
+            call_id: 'call_merge_1',
+          },
+          {
+            type: 'function_call',
+            name: 'save_finding',
+            arguments: JSON.stringify({
+              title: 'Procurement cycles are stretching',
+              category: 'Procurement',
+              signal:
+                'Enterprise buying teams are taking longer to finalize expansion decisions in the category.',
+              whyItMatters:
+                'This saved finding should be merged into the final report even though the report tool payload omits its citation.',
+              confidence: 'medium',
+              sourceTitle: 'Procurement note',
+              sourceUrl: 'https://example.com/procurement-note',
+            }),
+            call_id: 'call_merge_2',
+          },
+          {
+            type: 'function_call',
+            name: 'save_timeline_event',
+            arguments: JSON.stringify({
+              date: '2026-04-18',
+              event: 'A mid-cycle development appeared between the other milestones',
+              relevance:
+                'This should sort between the newest and oldest dated events in the final timeline.',
+            }),
+            call_id: 'call_merge_3',
+          },
+        ],
+        usage: {
+          input_tokens: 30,
+          output_tokens: 60,
+          total_tokens: 90,
+        },
+      })
+      .mockResolvedValueOnce({
+        id: 'resp_merge_2',
+        output: [
+          {
+            type: 'function_call',
+            name: 'submit_brief_report',
+            arguments: JSON.stringify(report),
+            call_id: 'call_merge_4',
+          },
+        ],
+        usage: {
+          input_tokens: 55,
+          output_tokens: 110,
+          total_tokens: 165,
+        },
+      })
+
+    const result = await runBriefingAgent({
+      topic: 'Anthropic',
+      objective:
+        'Assess competitive pressure, enterprise momentum, and the most important near-term risks.',
+      mode: 'risk-radar',
+      audience: 'executive',
+    })
+
+    expect(result.report.findings).toHaveLength(5)
+    expect(result.report.sourcePack.map((source) => source.url)).toContain(
+      'https://example.com/procurement-note',
+    )
+    expect(result.report.timeline.map((event) => event.date)).toEqual([
+      '2026-04-22',
+      '2026-04-18',
+      '2026-03-10',
+    ])
+  })
 })

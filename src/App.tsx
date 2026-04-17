@@ -8,6 +8,7 @@ import {
 } from '../shared/briefing.ts'
 import { BriefRequestError, requestBrief } from './lib/api'
 import { loadStoredDraft, saveDraft } from './lib/draft-storage'
+import { buildReportMarkdown, downloadTextFile } from './lib/export'
 import type {
   AgentResult,
   BriefAudience,
@@ -441,6 +442,23 @@ function App() {
                 <div className="report-tag">Brief ready</div>
                 <h3>{result.report.headline}</h3>
                 <p>{result.report.positioning}</p>
+                <div className="report-actions">
+                  <button
+                    type="button"
+                    className="utility-button"
+                    onClick={() =>
+                      downloadTextFile(
+                        `${result.report.headline
+                          .toLowerCase()
+                          .replace(/[^a-z0-9]+/g, '-')}-brief.md`,
+                        buildReportMarkdown(result),
+                        'text/markdown;charset=utf-8',
+                      )
+                    }
+                  >
+                    Export markdown
+                  </button>
+                </div>
               </article>
 
               <section className="insight-strip">

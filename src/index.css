@@ -513,6 +513,20 @@ button {
   background: linear-gradient(180deg, rgba(255, 251, 244, 0.94), rgba(255, 255, 255, 0.72));
 }
 
+.report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.utility-button {
+  border-radius: 999px;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.62);
+}
+
 .insight-card {
   display: grid;
   gap: 10px;

@@ -71,6 +71,12 @@ function App() {
         ? `Keep the objective under ${briefRequestLimits.objective.max} characters so the run stays focused.`
         : 'Spell out the decision, risk, or opportunity the agent should optimize around.'
 
+  const topicCounterClass =
+    topicLength > briefRequestLimits.topic.max ? 'is-error' : ''
+
+  const objectiveCounterClass =
+    objectiveLength > briefRequestLimits.objective.max ? 'is-error' : ''
+
   useEffect(() => {
     if ((runMode || result || error) && reportPanelRef.current) {
       reportPanelRef.current.scrollIntoView({
@@ -176,16 +182,21 @@ function App() {
               }
               placeholder="Company, market, product, or strategic issue"
             />
-            <p
-              className={`field-message ${
-                topicLength < briefRequestLimits.topic.min ||
-                topicLength > briefRequestLimits.topic.max
-                  ? 'is-error'
-                  : ''
-              }`}
-            >
-              {topicMessage}
-            </p>
+            <div className="field-meta">
+              <p
+                className={`field-message ${
+                  topicLength < briefRequestLimits.topic.min ||
+                  topicLength > briefRequestLimits.topic.max
+                    ? 'is-error'
+                    : ''
+                }`}
+              >
+                {topicMessage}
+              </p>
+              <span className={`field-counter ${topicCounterClass}`}>
+                {topicLength}/{briefRequestLimits.topic.max}
+              </span>
+            </div>
           </label>
 
           <label className="field">
@@ -201,16 +212,21 @@ function App() {
               }
               placeholder="What should the agent optimize for?"
             />
-            <p
-              className={`field-message ${
-                objectiveLength < briefRequestLimits.objective.min ||
-                objectiveLength > briefRequestLimits.objective.max
-                  ? 'is-error'
-                  : ''
-              }`}
-            >
-              {objectiveMessage}
-            </p>
+            <div className="field-meta">
+              <p
+                className={`field-message ${
+                  objectiveLength < briefRequestLimits.objective.min ||
+                  objectiveLength > briefRequestLimits.objective.max
+                    ? 'is-error'
+                    : ''
+                }`}
+              >
+                {objectiveMessage}
+              </p>
+              <span className={`field-counter ${objectiveCounterClass}`}>
+                {objectiveLength}/{briefRequestLimits.objective.max}
+              </span>
+            </div>
           </label>
 
           <div className="field">

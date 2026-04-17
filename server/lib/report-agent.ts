@@ -302,7 +302,7 @@ function mergeTimeline(
     deduped.set(`${event.date.toLowerCase()}::${event.event.toLowerCase()}`, event)
   }
 
-  return [...deduped.values()].slice(0, 6)
+  return sortTimelineEvents([...deduped.values()]).slice(0, 6)
 }
 
 function buildSourcePack(
@@ -324,6 +324,30 @@ function buildSourcePack(
   }
 
   return [...deduped.values()].slice(0, 10)
+}
+
+function getTimelineTimestamp(value: string) {
+  const timestamp = Date.parse(value)
+  return Number.isNaN(timestamp) ? null : timestamp
+}
+
+function sortTimelineEvents(
+  timeline: BriefTimelineEvent[],
+): BriefTimelineEvent[] {
+  return [...timeline]
+    .map((event, index) => ({
+      event,
+      index,
+      timestamp: getTimelineTimestamp(event.date),
+    }))
+    .sort((left, right) => {
+      if (left.timestamp !== null && right.timestamp !== null) {
+        return right.timestamp - left.timestamp
+      }
+
+      return left.index - right.index
+    })
+    .map((item) => item.event)
 }
 
 function normalizeReport(report: BriefReport, state: AgentState): BriefReport {

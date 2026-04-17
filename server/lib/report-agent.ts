@@ -319,8 +319,16 @@ function buildSourcePack(
 
   const deduped = new Map<string, BriefSource>()
 
-  for (const source of [...fromFindings, ...submitted]) {
+  for (const source of submitted) {
     deduped.set(source.url.toLowerCase(), source)
+  }
+
+  for (const source of fromFindings) {
+    const key = source.url.toLowerCase()
+
+    if (!deduped.has(key)) {
+      deduped.set(key, source)
+    }
   }
 
   return [...deduped.values()].slice(0, 10)

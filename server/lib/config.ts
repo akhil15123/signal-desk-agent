@@ -29,6 +29,7 @@ export const agentConfig = Object.freeze({
   baseUrl: process.env.OPENAI_BASE_URL || undefined,
   model: process.env.OPENAI_MODEL ?? 'gpt-5-mini',
   maxRounds: readPositiveInteger('SIGNAL_DESK_MAX_AGENT_ROUNDS', 8),
+  requestTimeoutMs: readPositiveInteger('SIGNAL_DESK_TIMEOUT_MS', 45_000),
   reasoningEffort: readReasoningEffort(
     'SIGNAL_DESK_REASONING_EFFORT',
     'medium',

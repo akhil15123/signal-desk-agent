@@ -247,6 +247,10 @@ function createEmptyState(): AgentState {
   }
 }
 
+function createRequestSignal() {
+  return AbortSignal.timeout(agentConfig.requestTimeoutMs)
+}
+
 function addTrace(state: AgentState, tool: string, detail: string) {
   state.trace.push({
     tool,
@@ -525,7 +529,7 @@ export async function runBriefingAgent(request: BriefRequest) {
     tools: agentTools,
     tool_choice: 'auto',
     reasoning: { effort: agentConfig.reasoningEffort },
-  })
+  }, { signal: createRequestSignal() })
 
   mergeUsage(state, response)
   indexBuiltInCalls(state, response)
@@ -559,7 +563,7 @@ export async function runBriefingAgent(request: BriefRequest) {
       tools: agentTools,
       tool_choice: 'auto',
       reasoning: { effort: agentConfig.reasoningEffort },
-    })
+    }, { signal: createRequestSignal() })
 
     mergeUsage(state, response)
     indexBuiltInCalls(state, response)

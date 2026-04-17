@@ -7,6 +7,7 @@ import {
   briefModes,
 } from '../shared/briefing.ts'
 import { BriefRequestError, requestBrief } from './lib/api'
+import { loadStoredDraft, saveDraft } from './lib/draft-storage'
 import type {
   AgentResult,
   BriefAudience,
@@ -81,7 +82,9 @@ function formatTokens(value: number) {
 }
 
 function App() {
-  const [draft, setDraft] = useState<BriefRequest>(initialDraft)
+  const [draft, setDraft] = useState<BriefRequest>(() =>
+    loadStoredDraft(initialDraft),
+  )
   const [result, setResult] = useState<AgentResult | null>(null)
   const [error, setError] = useState<{
     message: string
@@ -125,6 +128,10 @@ function App() {
       })
     }
   }, [runMode, result, error])
+
+  useEffect(() => {
+    saveDraft(draft)
+  }, [draft])
 
   async function handleRun(mode: 'live' | 'demo') {
     if (!canRun) {

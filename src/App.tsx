@@ -318,6 +318,17 @@ function App() {
             >
               {runMode === 'demo' ? 'Loading demo...' : 'Load demo'}
             </button>
+            <button
+              type="button"
+              className="tertiary-button"
+              disabled={isLoading}
+              onClick={() => {
+                setDraft(initialDraft)
+                setError(null)
+              }}
+            >
+              Reset draft
+            </button>
           </div>
 
           <p className="helper-text">

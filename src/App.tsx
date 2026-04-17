@@ -458,6 +458,21 @@ function App() {
                   >
                     Export markdown
                   </button>
+                  <button
+                    type="button"
+                    className="utility-button"
+                    onClick={() =>
+                      downloadTextFile(
+                        `${result.report.headline
+                          .toLowerCase()
+                          .replace(/[^a-z0-9]+/g, '-')}-brief.json`,
+                        JSON.stringify(result, null, 2),
+                        'application/json;charset=utf-8',
+                      )
+                    }
+                  >
+                    Export JSON
+                  </button>
                 </div>
               </article>
 

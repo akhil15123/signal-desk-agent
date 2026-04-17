@@ -81,6 +81,14 @@ function formatTokens(value: number) {
   return new Intl.NumberFormat('en-US').format(value)
 }
 
+function formatSourceDomain(url: string) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '')
+  } catch {
+    return url
+  }
+}
+
 function App() {
   const [draft, setDraft] = useState<BriefRequest>(() =>
     loadStoredDraft(initialDraft),
@@ -547,6 +555,9 @@ function App() {
                       target="_blank"
                       rel="noreferrer"
                     >
+                      <span className="source-domain">
+                        {formatSourceDomain(source.url)}
+                      </span>
                       <strong>{source.title}</strong>
                       <p>{source.note}</p>
                     </a>

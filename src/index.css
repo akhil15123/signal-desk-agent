@@ -608,6 +608,16 @@ button {
   gap: 8px;
 }
 
+.source-domain {
+  width: fit-content;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(15, 139, 141, 0.1);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--cyan);
+}
+
 .error-card {
   border-color: rgba(204, 76, 62, 0.28);
   background: rgba(255, 237, 232, 0.82);

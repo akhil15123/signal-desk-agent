@@ -414,6 +414,25 @@ function App() {
                 <p>{result.report.positioning}</p>
               </article>
 
+              <section className="insight-strip">
+                <article className="stack-card insight-card">
+                  <span className="report-tag">Findings</span>
+                  <strong>{result.report.findings.length}</strong>
+                </article>
+                <article className="stack-card insight-card">
+                  <span className="report-tag">Timeline</span>
+                  <strong>{result.report.timeline.length}</strong>
+                </article>
+                <article className="stack-card insight-card">
+                  <span className="report-tag">Actions</span>
+                  <strong>{result.report.recommendations.length}</strong>
+                </article>
+                <article className="stack-card insight-card">
+                  <span className="report-tag">Sources</span>
+                  <strong>{result.report.sourcePack.length}</strong>
+                </article>
+              </section>
+
               <section className="summary-grid">
                 {result.report.summary.map((item) => (
                   <article key={item} className="stack-card summary-card">

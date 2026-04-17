@@ -470,6 +470,12 @@ button {
   margin-top: 18px;
 }
 
+.insight-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .meta-row {
   display: flex;
   flex-wrap: wrap;
@@ -488,6 +494,17 @@ button {
 
 .report-header-card {
   background: linear-gradient(180deg, rgba(255, 251, 244, 0.94), rgba(255, 255, 255, 0.72));
+}
+
+.insight-card {
+  display: grid;
+  gap: 10px;
+  align-items: start;
+}
+
+.insight-card strong {
+  font-size: 1.8rem;
+  line-height: 1;
 }
 
 .summary-grid,
@@ -634,6 +651,7 @@ button {
   }
 
   .preset-row,
+  .insight-strip,
   .summary-grid,
   .findings-grid,
   .source-grid,

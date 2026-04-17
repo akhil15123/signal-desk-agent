@@ -41,4 +41,14 @@ describe('createApp', () => {
     expect(response.status).toBe(400)
     expect(response.body.error).toBe('Invalid demo briefing request.')
   })
+
+  it('returns 400 for malformed JSON payloads', async () => {
+    const response = await request(createApp())
+      .post('/api/demo')
+      .set('Content-Type', 'application/json')
+      .send('{"topic": ')
+
+    expect(response.status).toBe(400)
+    expect(response.body.error).toBe('Invalid JSON payload.')
+  })
 })

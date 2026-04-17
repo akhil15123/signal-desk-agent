@@ -1,7 +1,8 @@
 import cors from 'cors'
-import express from 'express'
+import express, { type NextFunction, type Request, type Response } from 'express'
 import { normalizeBriefRequestPayload } from './lib/brief-request.js'
 import { buildDemoBriefing } from './lib/demo-report.js'
+import { isJsonParseError } from './lib/http-errors.js'
 import { runBriefingAgent } from './lib/report-agent.js'
 import { briefRequestSchema } from './lib/schemas.js'
 
@@ -60,6 +61,24 @@ export function createApp() {
 
     res.json(buildDemoBriefing(parsed.data))
   })
+
+  app.use(
+    (
+      error: unknown,
+      _req: Request,
+      res: Response,
+      next: NextFunction,
+    ) => {
+      if (isJsonParseError(error)) {
+        res.status(400).json({
+          error: 'Invalid JSON payload.',
+        })
+        return
+      }
+
+      next(error)
+    },
+  )
 
   return app
 }

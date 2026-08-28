@@ -9,8 +9,6 @@ vi.mock('openai', () => {
     responses = {
       create: responsesCreate,
     }
-
-    constructor(_options: unknown) {}
   }
 
   return {

@@ -1,5 +1,7 @@
 # Signal Desk Agent
 
+[![CI](https://github.com/akhil15123/signal-desk-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/akhil15123/signal-desk-agent/actions/workflows/ci.yml)
+
 Signal Desk Agent is a full-stack GenAI project that turns a research prompt into a structured intelligence brief.
 
 Instead of returning a loose chat transcript, the backend forces the model to:

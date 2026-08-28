@@ -164,10 +164,6 @@ function App() {
     saveDraft(draft)
   }, [draft])
 
-  useEffect(() => {
-    setSummaryCopied(false)
-  }, [result])
-
   async function handleRun(mode: 'live' | 'demo') {
     if (!canRun) {
       return
@@ -175,6 +171,7 @@ function App() {
 
     setRunMode(mode)
     setError(null)
+    setSummaryCopied(false)
 
     try {
       const payload = await requestBrief(draft, mode)

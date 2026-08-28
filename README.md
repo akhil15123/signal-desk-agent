@@ -1,5 +1,13 @@
 # Signal Desk Agent
 
+
+<!-- portfolio-showcase:start -->
+<p align="center">
+  <img src="docs/showcase.svg" alt="Signal Desk Intelligence Agent synthetic product showcase" width="100%">
+</p>
+<p align="center"><sub><strong>Portfolio preview:</strong> all names, records, metrics, and scenarios shown above are synthetic. No real user or customer data is included.</sub></p>
+<!-- portfolio-showcase:end -->
+
 [![CI](https://github.com/akhil15123/signal-desk-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/akhil15123/signal-desk-agent/actions/workflows/ci.yml)
 
 Signal Desk Agent is a full-stack GenAI project that turns a research prompt into a structured intelligence brief.

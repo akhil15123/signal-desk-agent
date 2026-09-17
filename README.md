@@ -120,3 +120,14 @@ You will get a sample brief, trace log, recommendations, and source cards withou
 - Add exports for PDF or Slack-ready summaries
 - Add domain filters or vertical-specific prompt packs
 - Add evaluation cases for prompt and tool-call quality
+
+## Running tests
+
+To run the test suite, use:
+
+```bash
+npm test
+```
+
+This uses Vitest and will run all backend and contract tests.
+

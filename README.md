@@ -1,4 +1,4 @@
-# Signal Desk Agent
+# Signal Desk Agent (v2)
 
 
 <!-- portfolio-showcase:start -->

@@ -78,6 +78,13 @@ const starterPresets: Array<{
   },
 ]
 
+const runSteps = [
+  'Searching the web for fresh signals',
+  'Saving findings with save_finding',
+  'Ordering the timeline',
+  'Submitting the typed brief report',
+]
+
 const reportSections = [
   { id: 'brief-findings', label: 'Findings' },
   { id: 'brief-timeline', label: 'Timeline' },
@@ -376,7 +383,7 @@ function App() {
           </p>
         </section>
 
-        <section ref={reportPanelRef} className="panel panel-preview">
+        <section className="panel panel-preview">
           <div className="panel-heading">
             <p className="eyebrow">What You Get</p>
             <h2>Operator-ready output</h2>
@@ -398,6 +405,45 @@ function App() {
             <p>{draft.objective || 'Add an objective to sharpen the brief.'}</p>
           </div>
 
+          <>
+              <div className="signal-list">
+                {sampleSignals.map((signal) => (
+                  <article key={signal} className="stack-card signal-card">
+                    <p>{signal}</p>
+                  </article>
+                ))}
+              </div>
+
+              <article className={`stack-card ghost-report ${result ? 'is-ready' : ''}`}>
+                <div className="report-tag">{result ? 'Brief ready' : 'Next panel'}</div>
+                <h3>
+                  {result
+                    ? result.report.headline
+                    : 'Run a live brief to populate findings, timeline events, and action items.'}
+                </h3>
+                <p>
+                  {result
+                    ? `${result.report.findings.length} findings, ${result.report.recommendations.length} actions and ${result.report.sourcePack.length} sources are laid out below.`
+                    : 'Signal Desk returns a typed report object, not a loose chat transcript. That makes the interface easier to scan and the backend easier to test.'}
+                </p>
+                {result ? (
+                  <button
+                    type="button"
+                    className="utility-button"
+                    onClick={() =>
+                      reportPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }
+                  >
+                    Jump to brief ↓
+                  </button>
+                ) : null}
+              </article>
+          </>
+        </section>
+      </main>
+
+      {error || isLoading || result ? (
+        <section ref={reportPanelRef} className="panel panel-report" aria-live="polite">
           {error ? (
             <article className="stack-card error-card">
               <div className="report-tag">Run failed</div>
@@ -420,14 +466,19 @@ function App() {
                   ? 'Collecting evidence and assembling the brief.'
                   : 'Preparing the sample briefing package.'}
               </h3>
-              <p>
-                The result panel will update with findings, recommendations, a
-                timeline, and the source pack when the run finishes.
-              </p>
+              <ol className="run-steps">
+                {runSteps.map((step, index) => (
+                  <li key={step} style={{ animationDelay: `${index * 0.9}s` }}>
+                    <span className="run-dot" />
+                    {step}
+                  </li>
+                ))}
+              </ol>
             </article>
           ) : null}
 
-          {result ? (
+
+          {result && !isLoading ? (
             <div className="report-stack">
               <article className="stack-card report-header-card">
                 <div className="meta-row">
@@ -649,31 +700,9 @@ function App() {
                 </div>
               </section>
             </div>
-          ) : (
-            <>
-              <div className="signal-list">
-                {sampleSignals.map((signal) => (
-                  <article key={signal} className="stack-card signal-card">
-                    <p>{signal}</p>
-                  </article>
-                ))}
-              </div>
-
-              <article className="stack-card ghost-report">
-                <div className="report-tag">Next panel</div>
-                <h3>
-                  Run a live brief to populate findings, timeline events, and action items.
-                </h3>
-                <p>
-                  Signal Desk returns a typed report object, not a loose chat
-                  transcript. That makes the interface easier to scan and the
-                  backend easier to test.
-                </p>
-              </article>
-            </>
-          )}
+          ) : null}
         </section>
-      </main>
+      ) : null}
     </div>
   )
 }

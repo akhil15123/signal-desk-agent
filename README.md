@@ -3,7 +3,7 @@
 
 <!-- portfolio-showcase:start -->
 <p align="center">
-  <img src="docs/showcase.svg" alt="Signal Desk Intelligence Agent synthetic product showcase" width="100%">
+  <img src="docs/screenshots/brief.png" alt="Signal Desk brief: summary, insight counters, section nav and findings" width="100%">
 </p>
 <p align="center"><sub><strong>Portfolio preview:</strong> all names, records, metrics, and scenarios shown above are synthetic. No real user or customer data is included.</sub></p>
 <!-- portfolio-showcase:end -->
@@ -29,6 +29,21 @@ The result is a repo that feels closer to an operator tool than a demo chatbot.
 - Demo route for previewing the product without an API key
 - Typed report contract rendered directly in the UI
 - Tests covering the demo contract and HTTP path
+
+## Screenshots
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/workspace.png" alt="Brief setup workspace"><br><sub><b>Shape the run</b>: mode, preset, topic, objective and audience</sub></td>
+<td width="50%"><img src="docs/screenshots/running.png" alt="Agent in flight"><br><sub><b>Agent in flight</b>: live step tracker while tools run</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/findings.png" alt="Findings grid"><br><sub><b>Key signals</b>: typed findings with category, confidence and source</sub></td>
+<td><img src="docs/screenshots/timeline.png" alt="Timeline, actions, watchlist and trace"><br><sub><b>Timeline, actions, watchlist and agent trace</b></sub></td>
+</tr>
+</table>
+
+<p align="center"><img src="docs/screenshots/mobile.png" alt="Mobile layout" width="280"><br><sub>Responsive down to phone width</sub></p>
 
 ## Stack
 
